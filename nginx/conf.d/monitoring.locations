@@ -1,0 +1,36 @@
+# Proxy toi Grafana va Prometheus (Buoc 4).
+# Dung bien + resolver cua Docker de Nginx van khoi dong duoc
+# ngay ca khi chua bat cac container giam sat.
+resolver 127.0.0.11 valid=30s ipv6=off;
+
+location /grafana/ {
+    set $grafana_upstream http://grafana:3000;
+    proxy_pass $grafana_upstream;
+    proxy_set_header Host $host;
+}
+
+# Grafana Live dung websocket
+location /grafana/api/live/ {
+    set $grafana_upstream http://grafana:3000;
+    proxy_pass $grafana_upstream;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+}
+
+# Prometheus khong co dang nhap -> bao ve bang Basic Auth cua Nginx
+location /prometheus/ {
+    auth_basic "Prometheus - khu vuc quan tri";
+    auth_basic_user_file /etc/nginx/auth/.htpasswd;
+    set $prom_upstream http://prometheus:9090;
+    proxy_pass $prom_upstream;
+}
+
+# Alertmanager: xem cac canh bao dang kich hoat
+location /alertmanager/ {
+    auth_basic "Alertmanager - khu vuc quan tri";
+    auth_basic_user_file /etc/nginx/auth/.htpasswd;
+    set $am_upstream http://alertmanager:9093;
+    proxy_pass $am_upstream;
+}

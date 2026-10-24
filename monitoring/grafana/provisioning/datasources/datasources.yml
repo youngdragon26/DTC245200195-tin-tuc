@@ -1,0 +1,22 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090/prometheus
+    isDefault: true
+  # Dung o Buoc 5 (Loki). Neu chua bat Loki, datasource nay chi bao loi ket noi, khong anh huong.
+  - name: Loki
+    uid: loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+  - name: Alertmanager
+    uid: alertmanager
+    type: alertmanager
+    access: proxy
+    url: http://alertmanager:9093/alertmanager
+    jsonData:
+      implementation: prometheus
+      handleGrafanaManagedAlerts: false

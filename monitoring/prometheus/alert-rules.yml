@@ -1,0 +1,43 @@
+# Luat canh bao dua tren METRICS (Prometheus danh gia moi 15s, gui sang Alertmanager)
+groups:
+  - name: tintuc-he-thong
+    rules:
+      - alert: ServiceDown
+        expr: up == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations:
+          summary: "Dich vu {{ $labels.job }} khong phan hoi"
+          description: "Prometheus khong scrape duoc {{ $labels.instance }} trong 1 phut."
+
+      - alert: MySQLDown
+        expr: mysql_up == 0 or absent(mysql_up)
+        for: 30s
+        labels: { severity: critical }
+        annotations:
+          summary: "MySQL ngung hoat dong"
+          description: "mysqld-exporter khong ket noi duoc toi MySQL."
+
+      - alert: WebappHighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[2m])) > 0.1
+        for: 1m
+        labels: { severity: warning }
+        annotations:
+          summary: "Webapp tra loi 5xx nhieu"
+          description: "Ty le loi 5xx dang la {{ $value | printf \"%.2f\" }} request/giay."
+
+      - alert: ContainerHighMemory
+        expr: sum by (name) (container_memory_usage_bytes{name=~"tintuc-.*"}) > 700 * 1024 * 1024
+        for: 2m
+        labels: { severity: warning }
+        annotations:
+          summary: "Container {{ $labels.name }} dung nhieu RAM"
+          description: "Dang dung {{ $value | humanize1024 }}B RAM."
+
+      - alert: HostLowDisk
+        expr: (node_filesystem_avail_bytes{mountpoint="/rootfs",fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{mountpoint="/rootfs",fstype!~"tmpfs|overlay"}) < 0.10
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          summary: "May ao sap het o dia"
+          description: "Con trong duoi 10% dung luong."

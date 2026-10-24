@@ -1,0 +1,17 @@
+# Alertmanager: nhan canh bao tu Prometheus (metrics) va Loki Ruler (log),
+# gom nhom va hien thi tai https://<IP>/alertmanager/
+# (Muon gui ve email/Telegram thi them receiver tuong ung.)
+route:
+  receiver: web-ui
+  group_by: [alertname, severity]
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 1h
+
+receivers:
+  - name: web-ui
+
+inhibit_rules:
+  # MySQL da Down thi khong can bao them ServiceDown cua job mysql
+  - source_matchers: [alertname="MySQLDown"]
+    target_matchers: [alertname="ServiceDown", job="mysql"]
