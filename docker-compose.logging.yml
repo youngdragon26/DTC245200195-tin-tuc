@@ -1,0 +1,44 @@
+# =====================================================================
+#  BUOC 5 (commit 3): Log tap trung bang Loki + Promtail
+#  Promtail doc log cua TAT CA container qua Docker API -> day ve Loki
+#  Grafana dung Loki lam datasource de truy van LogQL
+#  Loki Ruler danh gia luat LogQL -> gui canh bao an ninh sang Alertmanager
+# =====================================================================
+x-hardening: &hardening
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  loki:
+    <<: *hardening
+    image: grafana/loki:3.3.2
+    container_name: tintuc-loki
+    user: "10001:10001"
+    command: ["-config.file=/etc/loki/loki-config.yaml"]
+    volumes:
+      - ./logging/loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - ./logging/loki/rules:/etc/loki/rules:ro      # luat canh bao an ninh dua tren log
+      - loki_data:/loki
+    depends_on: [alertmanager]
+    networks: [monitoring]
+
+  promtail:
+    <<: *hardening
+    image: grafana/promtail:3.3.2
+    container_name: tintuc-promtail
+    command: ["-config.file=/etc/promtail/promtail-config.yaml"]
+    volumes:
+      - ./logging/promtail/promtail-config.yaml:/etc/promtail/promtail-config.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro   # doc danh sach container + log
+    depends_on: [loki]
+    networks: [monitoring]
+
+  # Grafana can thay Loki: (khai bao datasource o monitoring/grafana/provisioning)
+  grafana:
+    depends_on: [prometheus, loki]
+
+volumes:
+  loki_data:

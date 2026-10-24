@@ -201,8 +201,8 @@ bash scripts/tao-traffic.sh 127.0.0.1 30
 ### 6.3. Luật cảnh báo log (Loki Ruler → Alertmanager)
 | Cảnh báo | Điều kiện | Mức |
 |---|---|---|
-| BruteForceLoginDetected | Một IP đăng nhập sai / bị khóa ≥ 5 lần trong 1 phút | critical |
-| RateLimitTriggered | Nginx trả 429 cho một IP > 5 lần trong 1 phút | warning |
+| BruteForceLoginDetected | Một IP đăng nhập sai / bị khóa ≥ 5 lần trong 5 phút | critical |
+| RateLimitTriggered | Nginx trả 429 cho một IP > 5 lần trong 5 phút | warning |
 | SuspiciousInputDetected | Dữ liệu chứa mẫu SQL Injection / XSS | warning |
 | WebappErrorLogsSpike | > 5 dòng log error trong 2 phút | warning |
 
@@ -235,7 +235,7 @@ powershell -ExecutionPolicy Bypass -File .\simulate-bruteforce.ps1 -Url https://
 ```
 Kết quả: vài lần **401** (sai mật khẩu), sau đó **429** (Nginx hoặc ứng dụng chặn vì vượt ngưỡng).
 
-### 7.2. Xem cảnh báo – làm ngay trong 1–2 phút
+### 7.2. Xem cảnh báo – làm trong vòng 5 phút
 - `https://192.168.105.130/alertmanager/` → thấy **BruteForceLoginDetected**, **RateLimitTriggered** kèm IP.
 - Grafana → **Alerting → Alert rules** → *Clear filters* → mục *Data source-managed* → luật ở trạng thái **Firing**.
 - Dashboard *Tin tức - Giám sát hệ thống* → nhóm **An ninh & cảnh báo**.

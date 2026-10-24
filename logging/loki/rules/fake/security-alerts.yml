@@ -1,0 +1,47 @@
+# Luat canh bao dua tren LOG (Loki Ruler danh gia LogQL moi phut -> Alertmanager)
+# Thu muc "fake" la ten tenant mac dinh cua Loki khi auth_enabled: false
+groups:
+  - name: tintuc-an-ninh
+    interval: 30s
+    rules:
+      - alert: BruteForceLoginDetected
+        expr: |
+          sum by (client_ip) (
+            count_over_time({job="webapp", event=~"LOGIN_FAILED|LOGIN_BLOCKED"} | json [5m])
+          ) >= 5
+        for: 0m
+        labels: { severity: critical }
+        annotations:
+          summary: "Nghi tan cong do mat khau tu IP {{ $labels.client_ip }}"
+          description: "{{ $value }} lan dang nhap sai / bi khoa trong 5 phut (nguong: 5)."
+
+      - alert: RateLimitTriggered
+        expr: |
+          sum by (remote_addr) (
+            count_over_time({job="nginx"} | json | status = 429 [5m])
+          ) > 5
+        for: 0m
+        labels: { severity: warning }
+        annotations:
+          summary: "Nginx chan IP {{ $labels.remote_addr }} vi gui qua nhieu request"
+          description: "{{ $value }} phan hoi 429 trong 5 phut."
+
+      - alert: SuspiciousInputDetected
+        expr: |
+          sum by (client_ip) (
+            count_over_time({job="webapp", event="SUSPICIOUS_INPUT"} | json [5m])
+          ) > 0
+        for: 0m
+        labels: { severity: warning }
+        annotations:
+          summary: "Du lieu dang ngo (SQL Injection/XSS) tu IP {{ $labels.client_ip }}"
+          description: "{{ $value }} request chua mau tan cong trong 5 phut."
+
+      - alert: WebappErrorLogsSpike
+        expr: |
+          sum(count_over_time({job="webapp", level="error"} [2m])) > 5
+        for: 0m
+        labels: { severity: warning }
+        annotations:
+          summary: "Ung dung web ghi nhieu log loi"
+          description: "{{ $value }} dong log error trong 2 phut."

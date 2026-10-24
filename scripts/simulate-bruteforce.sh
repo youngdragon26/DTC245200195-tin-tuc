@@ -19,4 +19,4 @@ for i in $(seq 1 "$N"); do
 done
 echo "---- Tong ket ----"
 for c in "${!COUNT[@]}"; do echo "HTTP $c : ${COUNT[$c]} lan"; done
-echo "Mo ngay (trong 1-2 phut): https://<IP>/alertmanager/  va  Grafana > Explore > Loki"
+echo "Mo ngay (trong vong 5 phut): https://<IP>/alertmanager/  va  Grafana > Explore > Loki"

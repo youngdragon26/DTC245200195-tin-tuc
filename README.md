@@ -82,8 +82,8 @@ docker compose ps                         # 13 container
 | WebappHighErrorRate | Prometheus | Lỗi 5xx > 0,1 request/giây trong 1 phút | warning |
 | ContainerHighMemory | Prometheus | Container dùng > 700 MB RAM trong 2 phút | warning |
 | HostLowDisk | Prometheus | Ổ đĩa máy ảo còn < 10% | warning |
-| BruteForceLoginDetected | Loki Ruler | Một IP đăng nhập sai/bị khóa ≥ 5 lần trong 1 phút | critical |
-| RateLimitTriggered | Loki Ruler | Nginx trả 429 cho một IP > 5 lần trong 1 phút | warning |
+| BruteForceLoginDetected | Loki Ruler | Một IP đăng nhập sai/bị khóa ≥ 5 lần trong 5 phút | critical |
+| RateLimitTriggered | Loki Ruler | Nginx trả 429 cho một IP > 5 lần trong 5 phút | warning |
 | SuspiciousInputDetected | Loki Ruler | Dữ liệu chứa mẫu SQL Injection / XSS | warning |
 | WebappErrorLogsSpike | Loki Ruler | > 5 dòng log error trong 2 phút | warning |
 

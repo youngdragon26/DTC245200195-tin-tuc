@@ -26,4 +26,4 @@ for ($i = 1; $i -le $N; $i++) {
 }
 Write-Host "---- Tong ket ----"
 foreach ($k in $stats.Keys) { Write-Host "HTTP $k : $($stats[$k]) lan" }
-Write-Host "Mo ngay (trong 1-2 phut): $Url/alertmanager/  va  Grafana > Explore > Loki"
+Write-Host "Mo ngay (trong vong 5 phut): $Url/alertmanager/  va  Grafana > Explore > Loki"
