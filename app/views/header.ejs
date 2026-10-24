@@ -14,6 +14,7 @@
       <input type="search" name="q" placeholder="Tìm kiếm bài viết..." value="<%= typeof q !== 'undefined' ? q : '' %>">
     </form>
     <nav>
+      <a href="/gioi-thieu">Giới thiệu</a>
       <% if (user) { %>
         <a href="/admin">Quản trị</a>
         <form action="/admin/logout" method="post" class="inline"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="link">Đăng xuất</button></form>

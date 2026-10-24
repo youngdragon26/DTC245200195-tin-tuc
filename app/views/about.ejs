@@ -1,0 +1,34 @@
+<%- include('header') %>
+<article class="post about">
+  <span class="tag">Giới thiệu</span>
+  <h1>Cổng thông tin Tin Tức 24H</h1>
+  <p class="summary">Website tin tức được xây dựng và triển khai trong bài tập lớn môn Triển khai và Quản trị Hệ thống Phần mềm – Đề 19: Website Tin tức / Cổng thông tin.</p>
+
+  <h2>Thông tin sinh viên</h2>
+  <table class="info">
+    <tr><th>Họ và tên</th><td>Thân Tuấn Vũ</td></tr>
+    <tr><th>Mã số sinh viên</th><td>DTC245200195</td></tr>
+    <tr><th>Lớp</th><td>CNTT K23G</td></tr>
+    <tr><th>Trường</th><td>Trường ĐH Công nghệ Thông tin và Truyền thông – Đại học Thái Nguyên</td></tr>
+    <tr><th>Mã nguồn</th><td><a href="https://github.com/youngdragon26/DTC245200195-tin-tuc" rel="noopener">github.com/youngdragon26/DTC245200195-tin-tuc</a></td></tr>
+  </table>
+
+  <h2>Chức năng website</h2>
+  <ul>
+    <li>Xem tin mới nhất, tin theo chuyên mục, chi tiết bài viết, bài viết liên quan và tin xem nhiều.</li>
+    <li>Tìm kiếm bài viết theo tiêu đề và tóm tắt.</li>
+    <li>Trang quản trị: đăng, sửa, xóa bài viết (đăng ngay hoặc lưu nháp); thêm, đổi tên, xóa chuyên mục; thống kê số bài và lượt xem.</li>
+  </ul>
+  <p class="muted">Hiện có <%= stats.articles %> bài viết đã đăng với tổng cộng <%= stats.views %> lượt xem.</p>
+
+  <h2>Hạ tầng triển khai</h2>
+  <ul>
+    <li><b>Ứng dụng:</b> Node.js 22 + Express + EJS, cơ sở dữ liệu MySQL 8.4, quản trị bằng phpMyAdmin.</li>
+    <li><b>Reverse proxy:</b> Nginx với HTTPS tự ký, security headers, giới hạn tần suất đăng nhập.</li>
+    <li><b>Giám sát:</b> Prometheus, Grafana, Alertmanager, cAdvisor, node/nginx/mysqld exporter.</li>
+    <li><b>Log tập trung:</b> Loki + Promtail, truy vấn bằng LogQL và cảnh báo an ninh từ log.</li>
+    <li><b>Hardening:</b> container không chạy root, mạng nội bộ cô lập, mật khẩu mạnh, quyền CSDL tối thiểu, CSRF token.</li>
+    <li>Toàn bộ 13 dịch vụ chạy bằng Docker Compose trên máy ảo Ubuntu (VMware).</li>
+  </ul>
+</article>
+<%- include('footer') %>

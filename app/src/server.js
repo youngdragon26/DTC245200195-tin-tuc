@@ -117,6 +117,14 @@ async function getCategories() {
   return rows;
 }
 
+async function getPopular(limit = 5) {
+  const [rows] = await pool.query(
+    `SELECT title, slug, views FROM articles WHERE status = 'published' ORDER BY views DESC LIMIT ?`,
+    [limit]
+  );
+  return rows;
+}
+
 const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
 function requireLogin(req, res, next) {
@@ -140,7 +148,14 @@ app.get(
     }
     sql += ' ORDER BY a.created_at DESC LIMIT 20';
     const [articles] = await pool.query(sql, params); // truy van tham so hoa -> chong SQL injection
-    res.render('index', { title: 'Trang chủ', categories, articles, q, heading: q ? `Kết quả tìm kiếm: "${q}"` : 'Tin mới nhất' });
+    res.render('index', {
+      title: 'Trang chủ',
+      categories,
+      articles,
+      q,
+      popular: await getPopular(),
+      heading: q ? `Kết quả tìm kiếm: "${q}" (${articles.length} bài)` : 'Tin mới nhất',
+    });
   })
 );
 
@@ -156,7 +171,14 @@ app.get(
        WHERE a.status = 'published' AND a.category_id = ? ORDER BY a.created_at DESC`,
       [cat.id]
     );
-    res.render('index', { title: cat.name, categories, articles, q: '', heading: `Danh mục: ${cat.name}` });
+    res.render('index', {
+      title: cat.name,
+      categories,
+      articles,
+      q: '',
+      popular: await getPopular(),
+      heading: `Danh mục: ${cat.name} (${articles.length} bài)`,
+    });
   })
 );
 
@@ -173,7 +195,22 @@ app.get(
     if (!rows.length) return res.status(404).render('error', { title: 'Không tìm thấy', categories, message: 'Bài viết không tồn tại.' });
     await pool.query('UPDATE articles SET views = views + 1 WHERE id = ?', [rows[0].id]);
     metrics.articleViews.inc();
-    res.render('article', { title: rows[0].title, categories, a: rows[0] });
+    const [related] = await pool.query(
+      `SELECT title, slug, summary, created_at FROM articles
+       WHERE status = 'published' AND category_id = ? AND id <> ? ORDER BY created_at DESC LIMIT 4`,
+      [rows[0].category_id, rows[0].id]
+    );
+    res.render('article', { title: rows[0].title, categories, a: rows[0], related, popular: await getPopular() });
+  })
+);
+
+app.get(
+  '/gioi-thieu',
+  wrap(async (req, res) => {
+    const [[stats]] = await pool.query(
+      `SELECT COUNT(*) AS articles, COALESCE(SUM(views),0) AS views FROM articles WHERE status = 'published'`
+    );
+    res.render('about', { title: 'Giới thiệu', categories: await getCategories(), stats });
   })
 );
 
@@ -232,7 +269,26 @@ app.get(
        FROM articles a JOIN categories c ON c.id = a.category_id ORDER BY a.created_at DESC`
     );
     const categories = await getCategories();
-    res.render('admin/dashboard', { title: 'Quản trị', articles, categories });
+    const [catStats] = await pool.query(
+      `SELECT c.id, c.name, c.slug, COUNT(a.id) AS total
+       FROM categories c LEFT JOIN articles a ON a.category_id = c.id
+       GROUP BY c.id, c.name, c.slug ORDER BY c.name`
+    );
+    const [[stats]] = await pool.query(
+      `SELECT COUNT(*) AS total,
+              COALESCE(SUM(status = 'published'), 0) AS published,
+              COALESCE(SUM(status = 'draft'), 0) AS drafts,
+              COALESCE(SUM(views), 0) AS views
+       FROM articles`
+    );
+    res.render('admin/dashboard', {
+      title: 'Quản trị',
+      articles,
+      categories,
+      catStats,
+      stats,
+      notice: req.query.tb || '',
+    });
   })
 );
 
@@ -302,8 +358,38 @@ app.post(
   requireLogin,
   wrap(async (req, res) => {
     const name = (req.body.name || '').trim();
-    if (name) await pool.query('INSERT IGNORE INTO categories (name, slug) VALUES (?, ?)', [name, slugify(name)]);
-    res.redirect('/admin');
+    if (name) {
+      await pool.query('INSERT IGNORE INTO categories (name, slug) VALUES (?, ?)', [name, slugify(name)]);
+      log.info('category_created', { name, by: req.session.user.username });
+    }
+    res.redirect('/admin#danh-muc');
+  })
+);
+
+app.post(
+  '/admin/danh-muc/:id/sua',
+  requireLogin,
+  wrap(async (req, res) => {
+    const name = (req.body.name || '').trim().slice(0, 100);
+    if (name) {
+      await pool.query('UPDATE IGNORE categories SET name = ?, slug = ? WHERE id = ?', [name, slugify(name), req.params.id]);
+      log.info('category_updated', { id: req.params.id, name, by: req.session.user.username });
+    }
+    res.redirect('/admin#danh-muc');
+  })
+);
+
+app.post(
+  '/admin/danh-muc/:id/xoa',
+  requireLogin,
+  wrap(async (req, res) => {
+    const [[row]] = await pool.query('SELECT COUNT(*) AS n FROM articles WHERE category_id = ?', [req.params.id]);
+    if (row.n > 0) {
+      return res.redirect('/admin?tb=' + encodeURIComponent('Không thể xóa danh mục còn bài viết.') + '#danh-muc');
+    }
+    await pool.query('DELETE FROM categories WHERE id = ?', [req.params.id]);
+    log.warn('category_deleted', { id: req.params.id, by: req.session.user.username });
+    res.redirect('/admin#danh-muc');
   })
 );
 

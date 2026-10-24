@@ -1,9 +1,27 @@
 <%- include('header') %>
-<article class="post">
-  <a class="tag" href="/danh-muc/<%= a.category_slug %>"><%= a.category %></a>
-  <h1><%= a.title %></h1>
-  <p class="muted"><%= new Date(a.created_at).toLocaleString('vi-VN') %> · <%= a.author || 'Ban biên tập' %> · <%= a.views + 1 %> lượt xem</p>
-  <p class="summary"><%= a.summary %></p>
-  <% String(a.content || '').split(/\n+/).forEach(function(p){ %><p><%= p %></p><% }) %>
-</article>
+<div class="layout">
+  <section class="content">
+    <article class="post">
+      <a class="tag" href="/danh-muc/<%= a.category_slug %>"><%= a.category %></a>
+      <h1><%= a.title %></h1>
+      <p class="muted"><%= new Date(a.created_at).toLocaleString('vi-VN') %> · <%= a.author || 'Ban biên tập' %> · <%= a.views + 1 %> lượt xem</p>
+      <p class="summary"><%= a.summary %></p>
+      <% String(a.content || '').split(/\n+/).forEach(function(p){ %><p><%= p %></p><% }) %>
+    </article>
+    <% if (related.length) { %>
+    <section class="related">
+      <h2>Bài viết liên quan</h2>
+      <div class="grid">
+        <% related.forEach(function(r){ %>
+          <article class="card">
+            <h3><a href="/bai-viet/<%= r.slug %>"><%= r.title %></a></h3>
+            <p><%= r.summary %></p>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+    <% } %>
+  </section>
+  <%- include('sidebar') %>
+</div>
 <%- include('footer') %>

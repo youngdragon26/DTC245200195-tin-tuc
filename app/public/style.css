@@ -28,3 +28,26 @@ input,textarea,select{font:inherit;padding:8px;border:1px solid #ccc;border-radi
 .tbl{width:100%;border-collapse:collapse;background:#fff;font-family:Arial,sans-serif;font-size:14px}
 .tbl th,.tbl td{border-bottom:1px solid var(--line);padding:8px;text-align:left}.actions{display:flex;gap:10px}
 .foot{border-top:1px solid var(--line);padding:18px 0;color:var(--muted);font:13px Arial,sans-serif;background:#fff}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+@media (max-width:860px){.layout{grid-template-columns:1fr}}
+.content{min-width:0}
+.sidebar{display:flex;flex-direction:column;gap:18px}
+.side-box{background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px 16px}
+.side-box h3{margin:0 0 10px;font:700 14px Arial,sans-serif;text-transform:uppercase;color:var(--red);letter-spacing:.5px}
+.popular{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+.popular a{text-decoration:none;font-weight:700}.popular a:hover{color:var(--red)}
+.popular small{display:block;font-size:12px}
+.side-cats{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.side-cats a{display:inline-block;border:1px solid var(--line);border-radius:14px;padding:3px 10px;text-decoration:none;font:13px Arial,sans-serif}
+.related{margin-top:24px}.related h2{font-size:20px}.related h3{font-size:17px;margin:4px 0}
+.related h3 a{text-decoration:none}
+.foot-grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;line-height:1.6}
+.foot a{color:var(--red)}
+.about h2{font-size:20px;margin-top:24px}
+.info{border-collapse:collapse;width:100%;font:15px Arial,sans-serif}
+.info th,.info td{border:1px solid var(--line);padding:8px 10px;text-align:left}.info th{width:170px;background:#f3f3f5}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:12px 0 20px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px;font:13px Arial,sans-serif;color:var(--muted)}
+.stat span{display:block;font:700 26px Arial,sans-serif;color:var(--ink)}
+.tbl input{padding:5px 8px}
+.inline-form{display:flex;gap:10px;align-items:center;flex-wrap:wrap}

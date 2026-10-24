@@ -1,5 +1,13 @@
 <%- include('../header') %>
 <div class="row"><h1>Quản lý bài viết</h1><a class="btn" href="/admin/bai-viet/moi">+ Viết bài mới</a></div>
+<% if (notice) { %><p class="err"><%= notice %></p><% } %>
+<div class="stats">
+  <div class="stat"><span><%= stats.total %></span>Tổng bài viết</div>
+  <div class="stat"><span><%= stats.published %></span>Đã đăng</div>
+  <div class="stat"><span><%= stats.drafts %></span>Bản nháp</div>
+  <div class="stat"><span><%= stats.views %></span>Lượt xem</div>
+  <div class="stat"><span><%= catStats.length %></span>Chuyên mục</div>
+</div>
 <table class="tbl">
   <thead><tr><th>Tiêu đề</th><th>Danh mục</th><th>Trạng thái</th><th>Lượt xem</th><th></th></tr></thead>
   <tbody>
@@ -17,9 +25,31 @@
   <% }) %>
   </tbody>
 </table>
-<h2>Thêm danh mục</h2>
-<form method="post" action="/admin/danh-muc" class="row">
+<h2 id="danh-muc">Quản lý chuyên mục</h2>
+<table class="tbl">
+  <thead><tr><th>Tên chuyên mục</th><th>Số bài</th><th>Đổi tên</th><th></th></tr></thead>
+  <tbody>
+  <% catStats.forEach(function(c){ %>
+    <tr>
+      <td><a href="/danh-muc/<%= c.slug %>"><%= c.name %></a></td>
+      <td><%= c.total %></td>
+      <td>
+        <form method="post" action="/admin/danh-muc/<%= c.id %>/sua" class="inline-form"><input type="hidden" name="_csrf" value="<%= csrf %>">
+          <input name="name" value="<%= c.name %>" required maxlength="100"> <button class="link">Lưu</button>
+        </form>
+      </td>
+      <td>
+        <% if (c.total == 0) { %>
+          <form method="post" action="/admin/danh-muc/<%= c.id %>/xoa" class="inline"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="link danger">Xóa</button></form>
+        <% } else { %><span class="muted">Còn bài viết</span><% } %>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+<h3>Thêm chuyên mục</h3>
+<form method="post" action="/admin/danh-muc" class="inline-form">
   <input type="hidden" name="_csrf" value="<%= csrf %>">
-  <input name="name" placeholder="Tên danh mục mới" required> <button class="btn">Thêm</button>
+  <input name="name" placeholder="Tên chuyên mục mới" required maxlength="100"> <button class="btn">Thêm</button>
 </form>
 <%- include('../footer') %>

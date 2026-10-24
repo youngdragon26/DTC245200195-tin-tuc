@@ -1,0 +1,18 @@
+<aside class="sidebar">
+  <section class="side-box">
+    <h3>Tin xem nhiều</h3>
+    <ol class="popular">
+      <% (typeof popular !== 'undefined' ? popular : []).forEach(function(p){ %>
+        <li><a href="/bai-viet/<%= p.slug %>"><%= p.title %></a><small class="muted"><%= p.views %> lượt xem</small></li>
+      <% }) %>
+    </ol>
+  </section>
+  <section class="side-box">
+    <h3>Chuyên mục</h3>
+    <ul class="side-cats">
+      <% (typeof categories !== 'undefined' ? categories : []).forEach(function(c){ %>
+        <li><a href="/danh-muc/<%= c.slug %>"><%= c.name %></a></li>
+      <% }) %>
+    </ul>
+  </section>
+</aside>
