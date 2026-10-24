@@ -1,0 +1,12 @@
+<%- include('../header', { categories: [] }) %>
+<div class="box narrow">
+  <h1>Đăng nhập quản trị</h1>
+  <% if (error) { %><p class="err"><%= error %></p><% } %>
+  <form method="post" action="/admin/login" class="form">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
+    <label>Tên đăng nhập <input name="username" required autocomplete="username"></label>
+    <label>Mật khẩu <input type="password" name="password" required autocomplete="current-password"></label>
+    <button class="btn">Đăng nhập</button>
+  </form>
+</div>
+<%- include('../footer') %>

@@ -1,0 +1,25 @@
+<%- include('../header') %>
+<div class="row"><h1>Quản lý bài viết</h1><a class="btn" href="/admin/bai-viet/moi">+ Viết bài mới</a></div>
+<table class="tbl">
+  <thead><tr><th>Tiêu đề</th><th>Danh mục</th><th>Trạng thái</th><th>Lượt xem</th><th></th></tr></thead>
+  <tbody>
+  <% articles.forEach(function(a){ %>
+    <tr>
+      <td><a href="/bai-viet/<%= a.slug %>"><%= a.title %></a></td>
+      <td><%= a.category %></td>
+      <td><%= a.status === 'published' ? 'Đã đăng' : 'Nháp' %></td>
+      <td><%= a.views %></td>
+      <td class="actions">
+        <a href="/admin/bai-viet/<%= a.id %>/sua">Sửa</a>
+        <form method="post" action="/admin/bai-viet/<%= a.id %>/xoa" class="inline"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="link danger">Xóa</button></form>
+      </td>
+    </tr>
+  <% }) %>
+  </tbody>
+</table>
+<h2>Thêm danh mục</h2>
+<form method="post" action="/admin/danh-muc" class="row">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <input name="name" placeholder="Tên danh mục mới" required> <button class="btn">Thêm</button>
+</form>
+<%- include('../footer') %>

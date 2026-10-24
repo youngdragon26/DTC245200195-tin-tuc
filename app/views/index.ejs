@@ -1,0 +1,14 @@
+<%- include('header') %>
+<h1><%= heading %></h1>
+<% if (!articles.length) { %><p class="muted">Chưa có bài viết nào.</p><% } %>
+<div class="grid">
+<% articles.forEach(function(a, i){ %>
+  <article class="card <%= i === 0 && !q ? 'lead' : '' %>">
+    <span class="tag"><%= a.category %></span>
+    <h2><a href="/bai-viet/<%= a.slug %>"><%= a.title %></a></h2>
+    <p><%= a.summary %></p>
+    <small class="muted"><%= new Date(a.created_at).toLocaleString('vi-VN') %> · <%= a.views %> lượt xem</small>
+  </article>
+<% }) %>
+</div>
+<%- include('footer') %>

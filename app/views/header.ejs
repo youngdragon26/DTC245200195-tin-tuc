@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> | Cổng thông tin Tin Tức 24h</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">TIN TỨC <span>24H</span></a>
+    <form class="search" action="/" method="get">
+      <input type="search" name="q" placeholder="Tìm kiếm bài viết..." value="<%= typeof q !== 'undefined' ? q : '' %>">
+    </form>
+    <nav>
+      <% if (user) { %>
+        <a href="/admin">Quản trị</a>
+        <form action="/admin/logout" method="post" class="inline"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="link">Đăng xuất</button></form>
+      <% } else { %>
+        <a href="/admin/login">Đăng nhập</a>
+      <% } %>
+    </nav>
+  </div>
+  <% if (typeof categories !== 'undefined' && categories.length) { %>
+  <div class="cats"><div class="wrap">
+    <% categories.forEach(function(c){ %><a href="/danh-muc/<%= c.slug %>"><%= c.name %></a><% }) %>
+  </div></div>
+  <% } %>
+</header>
+<main class="wrap">

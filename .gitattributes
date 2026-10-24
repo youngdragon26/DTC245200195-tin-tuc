@@ -1,0 +1,6 @@
+# Luon giu xuong dong kieu Linux cho script va cau hinh (tranh loi khi sua tren Windows)
+*.sh   text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.conf text eol=lf
+*.sql  text eol=lf

@@ -1,0 +1,21 @@
+<%- include('../header') %>
+<h1><%= title %></h1>
+<form method="post" action="<%= action %>" class="form">
+  <input type="hidden" name="_csrf" value="<%= csrf %>">
+  <label>Tiêu đề <input name="title" required maxlength="250" value="<%= a.title || '' %>"></label>
+  <label>Danh mục
+    <select name="category_id">
+      <% categories.forEach(function(c){ %><option value="<%= c.id %>" <%= a.category_id == c.id ? 'selected' : '' %>><%= c.name %></option><% }) %>
+    </select>
+  </label>
+  <label>Tóm tắt <textarea name="summary" rows="3" maxlength="500"><%= a.summary || '' %></textarea></label>
+  <label>Nội dung <textarea name="content" rows="12"><%= a.content || '' %></textarea></label>
+  <label>Trạng thái
+    <select name="status">
+      <option value="published" <%= a.status !== 'draft' ? 'selected' : '' %>>Đăng ngay</option>
+      <option value="draft" <%= a.status === 'draft' ? 'selected' : '' %>>Lưu nháp</option>
+    </select>
+  </label>
+  <button class="btn">Lưu</button> <a href="/admin">Hủy</a>
+</form>
+<%- include('../footer') %>

@@ -1,0 +1,18 @@
+{
+  "name": "tin-tuc-cong-thong-tin",
+  "version": "1.0.0",
+  "description": "Website Tin tuc / Cong thong tin - De 19 TKQT HTPM",
+  "main": "src/server.js",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-session": "^2.1.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mysql2": "^3.11.5",
+    "prom-client": "^15.1.3"
+  }
+}
