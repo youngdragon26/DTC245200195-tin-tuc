@@ -45,11 +45,11 @@ Website tin tức (trang chủ, danh mục, chi tiết bài viết, tìm kiếm,
 
 ```bash
 # 1. Lấy mã nguồn
-git clone https://github.com/<tai-khoan-MSSV>/DTC245200195-tin-tuc.git
+git clone https://github.com/youngdragon26/DTC245200195-tin-tuc.git
 cd DTC245200195-tin-tuc
 
 # 2. Tạo .env (mật khẩu mạnh ngẫu nhiên), chứng chỉ HTTPS tự ký, Basic Auth
-bash scripts/setup.sh <IP_may_ao>        # ví dụ: bash scripts/setup.sh 192.168.105.130
+bash scripts/setup.sh 192.168.105.130 
 
 # 3. Kiểm tra môi trường (mọi dòng phải [OK])
 bash scripts/check-env.sh
