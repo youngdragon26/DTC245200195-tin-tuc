@@ -69,7 +69,7 @@ services:
 
   cadvisor:
     <<: *hardening
-    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    image: ghcr.io/google/cadvisor:v0.60.5
     container_name: tintuc-cadvisor
     privileged: true               # cAdvisor can doc cgroup cua host (ngoai le, chi nam trong mang monitoring)
     devices: [/dev/kmsg]
